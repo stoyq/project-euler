@@ -40,8 +40,8 @@ for i in range(1,21):
     debugCounter(Counter(primeFactors(i)))
     multisetUnion = multisetUnion | Counter(primeFactors(i))
 
-debugCounter(multisetUnion)
 smallestMultiple = 1
 for number, count in multisetUnion.items():
     smallestMultiple = smallestMultiple * number ** count
-print("smallestMultiple:", smallestMultiple)
+print("smallest multiple:", smallestMultiple)
+debugCounter(multisetUnion)
