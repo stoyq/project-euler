@@ -1,3 +1,6 @@
+import time
+from math import isqrt
+
 def isPrime(n):
     if n == 1:
         return False
@@ -23,7 +26,7 @@ def isPrimeFast(n):
         return True
 
     for p in primesKnown:
-        if p > (int(n**0.5)+1):
+        if p > (isqrt(n)+1):
             break
 
         if n % p == 0:
@@ -35,11 +38,31 @@ def isPrimeFast(n):
 
 
 
-
+start = time.perf_counter()
 candidate = 3
 n = 1
-while n < 10001:
+N = 10001
+print(f"Calculating the {N}-th prime number")
+print("\n--- Running isPrime() ---")
+while n < N:
+    if isPrime(candidate):
+        n = n + 1
+        print(f"{n}-th prime is {candidate}".ljust(40),end='\r')
+    candidate += 2
+print()
+end = time.perf_counter()
+print(f"Elapsed time: {end - start:.6f} seconds")
+
+
+print("\n--- Running isPrimeFast() ---")
+start = time.perf_counter()
+candidate = 3
+n = 1
+while n < N:
     if isPrimeFast(candidate):
         n = n + 1
-        print(n,":",candidate)
+        print(f"{n}-th prime is {candidate}".ljust(40),end='\r')
     candidate += 2
+print()
+end = time.perf_counter()
+print(f"Elapsed time: {end - start:.6f} seconds")
