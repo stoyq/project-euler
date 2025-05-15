@@ -131,9 +131,45 @@ checks = [
         ]
 
 
+# Method 1: check all 8 directions
+print("--- Method 1: check all 8 directions ---")
 for i in range(20):
     for j in range(20):
         for func, name in checks:
             updateLargest(func(i,j), name, i, j)
 
 highlightGrid(I,J)
+print(f"Largest product is {largest} found at grid[{I},{J}]={grid[I][J]} in direction {direction}")
+
+
+# Method 2: use 4 directional vectors
+
+print("--- Method 2: check 4 vectors ---")
+# reset globals
+
+largest = 0
+I = 0
+J = 0
+direction = ''
+
+vectors = [
+        ("right", 0, 1),
+        ("down", 1, 0),
+        ("down right", 1, 1),
+        ("up right", -1, 1)
+        ]
+
+# define what "out of bounds" mean
+def outOfBounds(i,j):
+    return i <= 2 or i >= 17 or j <= 2 or j >= 17
+
+
+for i in range(20):
+    for j in range(20):
+        for name, dx, dy in vectors:
+            if not outOfBounds(i+dx, j+dy):
+                product = grid[i][j] * grid[i+dx][j+dy] * grid[i+2*dx][j+2*dy] * grid[i+3*dx][j+3*dy]
+                updateLargest(product,name,i,j)
+
+highlightGrid(I,J)
+print(f"Largest product is {largest} found at grid[{I},{J}]={grid[I][J]} in direction {direction}")
