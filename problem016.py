@@ -30,6 +30,8 @@ total[0] = 2
 N = 1000 
 # how many times to double
 for _ in range(N-1):
+    # reset carry each time
+    carry = 0
     # go through each digit 1
     for i in range(len(total)):
         product = total[i] * 2 + carry
