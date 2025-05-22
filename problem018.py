@@ -1,45 +1,13 @@
 import time
 from datetime import datetime
 
-''' This code doesn't work (yet) and then I realize I don't need a tree. Commenting out
-# create a class to define a node with left and right children
-class Node:
-    def __init__(self, value, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
+DEBUG = 0
 
-    # add a new node using level-order insertion
-    # return True if successful, otherwise return False
-    def add(self, value):
-        # check if left is empty. if so, add it here
-        if self.left is None:
-            self.left = Node(value)
-            return True
-        
-        # now check if right is empty. if so, add it here
-        elif self.right is None:
-            self.right = Node(value)
-            return True
+#
+# --- The text data ---
+#
 
-        # else, we have to recursively find a spot in the children
-        else:
-            if self.left.add(value):
-                return True
-            elif self.right.add(value):
-                return True
-            else:
-                # I don't think we'll ever reach this case
-                return False
-
-    # for debugging purpose, used by print()
-    def __str__(self):
-        #return f"Node(value={self.value}, left={self.left}, right={self.right})"
-        return f"({self.value}, ({self.left}, {self.right}))"
-
-'''
-
-inputText = """
+inputText15 = """
 75
 95 64
 17 47 82
@@ -57,26 +25,40 @@ inputText = """
 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 """.split('\n')
 
-inputText2 = """
+inputText4 = """
 3
 7 4
 2 4 6
 8 5 9 3
 """.split('\n')
 
-# store the triangle as a list of lists
-tri = []
-for row in inputText:
-    if not row == '':
-        tri.append(list(map(int,row.split())))
+# Problem 67 input
+with open("./data/0067_triangle.txt", "r", encoding="utf-8") as f:
+    inputText67 = f.read().split('\n')
+
+#
+# --- The text data, processed ---
+#
 
 # store the triangle as a list of lists
-tri2 = []
-for row in inputText2:
+tri15 = []
+for row in inputText15:
     if not row == '':
-        tri2.append(list(map(int,row.split())))
+        tri15.append(list(map(int,row.split())))
 
+# store the triangle as a list of lists
+tri4 = []
+for row in inputText4:
+    if not row == '':
+        tri4.append(list(map(int,row.split())))
 
+# store the triangle as a list of lists
+tri100 = []
+for row in inputText67:
+    if not row == '':
+        tri100.append(list(map(int,row.split())))
+# trim a bit for testing
+#tri100 = tri100[0:24]
 
 # get left number
 # tri is the triangle of numbers
@@ -123,31 +105,75 @@ def maxPath(tri, row, i):
     else:
         return tri[row][i] + right_sum, [tri[row][i]] + right_path
 
+# dynamic programming method
+# start from bottom of triangle and move up
+# Careful! Lists (tri) are passed by reference
+def maxPathDP(tri):
+    # we'll store the max sums here
+    # use shallow 2D copy so we don't affect tri (passed by reference)
+    max_sums = [row[:] for row in tri]
+
+    # and store the left/right choice here
+    # use shallow 2D copy so we don't affect tri (passed by reference)
+    backtrack = [row[:] for row in tri]
+
+    for i in range(len(max_sums)-2,-1,-1):
+        # go through the row
+        row = max_sums[i]
+        for j in range(len(row)):
+            left_sum = left(max_sums,i,j)
+            right_sum = right(max_sums,i,j)
+            max_sums[i][j] += max(left_sum, right_sum)
+
+            if left_sum > right_sum:
+                backtrack[i][j] = 'L'
+            else:
+                backtrack[i][j] = 'R'
+
+        #print(max_sums[i])
+
+    # now use the backtrack result to get the full path
+    backtrack_list = [tri[0][0]]
+    decision = backtrack[0][0]
+    i_loc = 0
+    if DEBUG:
+        print(tri[0][0],end='')
+        
+    for i in range(1, len(tri)):
+        if decision == 'R':
+            i_loc += 1
+        decision = backtrack[i][i_loc]
+        if DEBUG:
+            print(" ->",tri[i][i_loc],end='')
+        backtrack_list.append(tri[i][i_loc])
+
+    if DEBUG:
+        print()
+
+    return max_sums[0][0], backtrack_list
+
+
+
+
 def main():
     print("Euler Problem 18")
-    print(inputText)
-    print('\n'.join(str(x) for x in tri))
-
     '''
-    leftVal = -1
-    rightVal = -1
-    try:
-        print("left of",tri[5][0],"is",left(tri,5,0))
-        print("right of",tri[14][0],"is",right(tri,14,0))
-        leftVal = left(tri,14,0)
-        rightVal = right(tri,14,0)
-    except Exception as e:
-        print("caught expression:", e)
+    print(inputText15)
+    print('\n'.join(str(x) for x in tri15))
 
-    print("leftVal:",leftVal)
-    print("rightVal:",rightVal)
+    print(inputText4)
+    print('\n'.join(str(x) for x in tri4))
+
+    print(inputText67)
+    print('\n'.join(str(x) for x in tri100))
     '''
 
-    print(inputText2)
-    print('\n'.join(str(x) for x in tri2))
+    print("max of tri15 is:", maxPath(tri15, 0, 0))
+    print("max of tri4 is:", maxPath(tri4, 0, 0))
+    #print("max of tri100 is:", maxPath(tri100,0,0))
 
-    print("max of tri is:", maxPath(tri, 0, 0))
-    print("max of tri2 is:", maxPath(tri2, 0, 0))
+
+    print("max of tri100 using DP:",maxPathDP(tri100))
 
 if __name__ == "__main__":
     start = time.perf_counter()
