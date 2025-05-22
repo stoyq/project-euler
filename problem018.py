@@ -55,13 +55,99 @@ inputText = """
 91 71 52 38 17 14 91 43 58 50 27 29 48
 63 66 04 68 89 53 67 30 73 16 69 87 40 31
 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
-""".replace('\n',' ').split()
+""".split('\n')
 
+inputText2 = """
+3
+7 4
+2 4 6
+8 5 9 3
+""".split('\n')
+
+# store the triangle as a list of lists
+tri = []
+for row in inputText:
+    if not row == '':
+        tri.append(list(map(int,row.split())))
+
+# store the triangle as a list of lists
+tri2 = []
+for row in inputText2:
+    if not row == '':
+        tri2.append(list(map(int,row.split())))
+
+
+
+# get left number
+# tri is the triangle of numbers
+# row starts at 0
+# i starts at 0
+def left(tri, row, i):
+    # need to first make sure the indices are valid
+    if not row < (len(tri)-1):
+        return None
+    if i > row:
+        return None
+
+    # otherwise we are good to go
+    return tri[row+1][i]
+
+
+# get right number
+# tri is the triangle of numbers
+# row starts at 0
+# i starts at 0
+def right(tri, row, i):
+    # need to first make sure the indices are valid
+    if not row < (len(tri)-1):
+        return None
+    if i > row:
+        return None
+
+    # otherwise we are good to go
+    return tri[row+1][i+1]
+
+# brute force (slow) max
+# return maximum sum from root of triangle
+def maxPath(tri, row, i):
+    # base case: leaf node
+    if left(tri, row, i) == None and right(tri, row, i) == None:
+        return tri[row][i], [tri[row][i]]
+
+    # recursive case
+    left_sum, left_path = maxPath(tri, row+1, i)
+    right_sum, right_path = maxPath(tri, row+1, i+1)
+
+    if left_sum > right_sum:
+        return tri[row][i] + left_sum, [tri[row][i]] + left_path
+    else:
+        return tri[row][i] + right_sum, [tri[row][i]] + right_path
 
 def main():
     print("Euler Problem 18")
     print(inputText)
+    print('\n'.join(str(x) for x in tri))
 
+    '''
+    leftVal = -1
+    rightVal = -1
+    try:
+        print("left of",tri[5][0],"is",left(tri,5,0))
+        print("right of",tri[14][0],"is",right(tri,14,0))
+        leftVal = left(tri,14,0)
+        rightVal = right(tri,14,0)
+    except Exception as e:
+        print("caught expression:", e)
+
+    print("leftVal:",leftVal)
+    print("rightVal:",rightVal)
+    '''
+
+    print(inputText2)
+    print('\n'.join(str(x) for x in tri2))
+
+    print("max of tri is:", maxPath(tri, 0, 0))
+    print("max of tri2 is:", maxPath(tri2, 0, 0))
 
 if __name__ == "__main__":
     start = time.perf_counter()
