@@ -34,6 +34,29 @@ for coin in [2, 5, 10, 20, 50, 100, 200]:
         ways[key] += value
 
 print(f"Number of ways to make {target}p:",ways[target])
-print(ways[77])
-print(ways[137])
-print(ways[199])
+#print(ways[77])
+#print(ways[137])
+#print(ways[199])
+
+
+print("--- Improved Method ---")
+
+# reset
+target = 200
+ways = {}
+for amount in range(0, target+1):
+    ways[amount] = 0
+
+#print(ways)
+
+for coin in [1, 2, 5, 10, 20, 50, 100, 200]:
+    for amount in range(coin, target+1):
+        if amount == coin:
+            ways[amount] += 1
+        else:
+            ways[amount] += ways[amount - coin]
+
+        #if amount == 200:
+        #    print(ways[amount],"-->",end='')
+
+print(f"Number of ways to make {target}p:",ways[target])
