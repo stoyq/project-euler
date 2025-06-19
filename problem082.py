@@ -1,4 +1,4 @@
-DEBUG = 1 
+DEBUG = 0 
 
 # simple matrix for testing
 M1 = [  [131, 673, 234, 103,  18],
@@ -30,7 +30,6 @@ for col in range(1, size):
     for row in range(size):
         #print(f"Calculating cell ({row},{col})")
 
-        min_path_value = 0
         left = 0
         above = 0
         below = 0
@@ -80,14 +79,15 @@ for col in range(1, size):
 
 
 
-min_path_sum = SP[size-1][size-1]
+min_path_sum = min(v[-1] for v in SP)
 
-for i in range(size):
-    for j in range(size):
-        print("%3d " % SP[i][j], end='')
-        if j == size - 1:
-            min_path_sum = min(min_path_sum, SP[i][j])
+if DEBUG:
+    for i in range(size):
+        for j in range(size):
+            print("%3d " % SP[i][j], end='')
+            if j == size - 1:
+                min_path_sum = min(min_path_sum, SP[i][j])
 
-    print()
+        print()
 
 print(f"The minimum path sum is: {min_path_sum}")
